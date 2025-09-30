@@ -1,0 +1,46 @@
+# .dockerignore
+
+# Ignore Maven build output and logs
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+.mvn/
+
+# Ignore frontend build output and dependencies
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.npm
+.npmrc
+
+# Ignore IDE and editor configuration files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+nbproject/
+
+# Ignore version control history and files
+.git/
+.gitignore
+
+# Ignore the Dockerfile and related files
+Dockerfile
+.dockerignore
+
+# Ignore Operating System specific files
+.DS_Store
+Thumbs.db
+
+# Ignore log files and JVM crash reports
+*.log
+hs_err_pid*
+npm-debug.log*
+yarn-error.log
+yarn-debug.log
