@@ -5,6 +5,7 @@ import App from './pages/App/App';
 import reportWebVitals from './reportWebVitals';
 import { TerminalContextProvider } from 'react-terminal'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@xterm/xterm/css/xterm.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
