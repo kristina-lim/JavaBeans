@@ -1,12 +1,12 @@
 import './App.css';
 import NavBar from '../../components/NavBar/NavBar';
-import Terminal from '../../components/Terminal/Terminal';
+import XTerm from '../../components/XTerm/XTerm';
 
 function App() {
   return (
     <div className="App">
         <NavBar />
-        <Terminal />
+        <XTerm />
     </div>
   );
 }
