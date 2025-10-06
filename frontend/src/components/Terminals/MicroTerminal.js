@@ -14,9 +14,30 @@ export default function MicroTerminal() {
         },
     });
     const input = useRef('');
+    const ws = useRef(null);
 
     useEffect(() => {
         if (!instance) { return; }
+
+         // Connect to backend WebSocket
+        ws.current = new WebSocket('ws://localhost:9090/');
+        ws.current.onopen = () => {
+            instance.writeln('Connected to Java backend.\r\n');
+        };
+
+        ws.current.onmessage = (event) => {
+            // Data from backend (shell output)
+            instance.write(event.data);
+        };
+
+        ws.current.onclose = () => {
+            instance.writeln('\r\nConnection closed.');
+        };
+
+        ws.current.onerror = (err) => {
+            console.error('WebSocket error:', err);
+            instance.writeln('\r\nConnection error.');
+        };
 
         // focus terminal so user can type
         instance.focus();
@@ -35,6 +56,7 @@ export default function MicroTerminal() {
         };
 
         const dispose = instance.onData((data) => {
+            ws.current?.send(data);
             // if user pressed enter, 13, move to a new line
             if (data.charCodeAt(0) === 13) {
                 instance.writeln('');
@@ -42,7 +64,7 @@ export default function MicroTerminal() {
                 // clears the terminal once user types "clear"
                 input.current = '';
                 instance.write('> ');
-            } else if (data.charCodeAt(0) === 127) {
+            } else if (data.charCodeAt(0) == 127) {
                 if (input.current.length > 0) {
                     instance.write('\b \b');
                     // erase character in buffer
