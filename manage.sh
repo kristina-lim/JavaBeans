@@ -48,10 +48,11 @@ run_container() {
     docker volume create "$VOLUME_NAME" > /dev/null
 
     echo "Starting container: $CONTAINER_NAME..."
-    # Only map port 3000 for the React frontend. Port 8080 is not exposed.
+    # Map ports and bind mount local exercises folder for live updates
     docker run -d --name "$CONTAINER_NAME" \
       -p 3000:3000 \
-      -v "$VOLUME_NAME:/app/exercises" \
+      -p 9090:9090 \
+      -v "$(pwd)/exercises:/app/exercises" \
       "$IMAGE_NAME"
 
     echo "Container is running."

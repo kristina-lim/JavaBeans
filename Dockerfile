@@ -23,11 +23,13 @@ COPY frontend/ ./
 # ---- Stage 3: Create the Final, Self-Contained Image ----
 FROM eclipse-temurin:21-jdk-jammy
 
-# Install Supervisor and Node.js from the faster NodeSource repository
+# Install Supervisor, Node.js, Maven, and Micro text editor
 RUN apt-get update && \
-    apt-get install -y curl supervisor && \
+    apt-get install -y curl supervisor maven && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
+    curl https://getmic.ro | bash && \
+    mv micro /usr/local/bin/ && \
     rm -rf /var/lib/apt/lists/* # Clean up apt cache
 
 WORKDIR /app
@@ -45,7 +47,7 @@ COPY --from=frontend-builder /usr/src/app/ ./frontend/
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose both the frontend and backend ports
-EXPOSE 3000
+EXPOSE 3000 9090
 
 # The entrypoint is Supervisor, which will start both apps
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
