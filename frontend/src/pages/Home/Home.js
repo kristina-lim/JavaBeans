@@ -1,9 +1,9 @@
-import MicroTerminal from '../../components/Terminals/MicroTerminal';
+import Terminals from '../Terminals/Terminals';
 
 export default function Home() {
 	return (
 		<div>
-			<MicroTerminal />
+			<Terminals />
 		</div>
 	);
 }
