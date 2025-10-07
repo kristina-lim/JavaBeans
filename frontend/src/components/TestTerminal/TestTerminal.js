@@ -3,16 +3,7 @@ import { useXTerm } from 'react-xtermjs';
 import '@xterm/xterm/css/xterm.css';
 
 export default function TestTerminal() {
-    const { instance, ref } = useXTerm({
-        cursorBlink: true,
-        fontSize: 14,
-        fontFamily: 'monospace',
-        theme: {
-            background: '#1e1e1e',
-            foreground: '#00ff00',
-            cursor: '#00ff00',
-        },
-    });
+    const { instance, ref } = useXTerm();
     const input = useRef('');
     const ws = useRef(null);
 
@@ -66,6 +57,7 @@ export default function TestTerminal() {
                 borderRadius: '8px',
                 padding: '8px',
                 margin: '0 auto',
+                textAlign: 'left',
             }}
         />
     );
