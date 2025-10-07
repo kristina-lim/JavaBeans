@@ -48,11 +48,11 @@ run_container() {
     docker volume create "$VOLUME_NAME" > /dev/null
 
     echo "Starting container: $CONTAINER_NAME..."
-    # Map ports and bind mount local exercises folder for live updates
+    # Use named volume for persistent but isolated exercise data
     docker run -d --name "$CONTAINER_NAME" \
       -p 3000:3000 \
       -p 9090:9090 \
-      -v "$(pwd)/exercises:/app/exercises" \
+      -v "$VOLUME_NAME:/app/exercises" \
       "$IMAGE_NAME"
 
     echo "Container is running."
