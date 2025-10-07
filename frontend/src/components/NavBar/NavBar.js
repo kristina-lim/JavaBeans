@@ -3,11 +3,13 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from '../../logo.png';
+import './NavBar.css';
+
 
 export default function NavBar() {
     return(
         <>
-            <Navbar className="d-flex justify-content-start">
+            <Navbar className="navbar">
                 <Container>
                     <Navbar.Brand as={Link} to="/">
                         <img
