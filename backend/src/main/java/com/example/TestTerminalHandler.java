@@ -26,12 +26,12 @@ public class TestTerminalHandler extends TextWebSocketHandler {
                 "/dev/null"
         );
         processBuilder.redirectErrorStream(true);
-        processBuilder.directory(new File("/app/exercises/src/test/java/com/example")); // Start in test directory
+        processBuilder.directory(new File("/app/exercises")); // Start in exercises root
 
         Map<String, String> env = processBuilder.environment();
         env.put("TERM", "xterm-256color");
         env.put("PS1", "$ ");
-        env.put("HOME", "/app/exercises/src/test/java/com/example");  // Set HOME for tests
+        env.put("HOME", "/app/exercises");  // Set HOME for tests
 
         Process process = processBuilder.start();
         sessionProcesses.put(session.getId(), process);
