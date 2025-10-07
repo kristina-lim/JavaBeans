@@ -42,37 +42,10 @@ export default function TestTerminal() {
         // focus terminal so user can type
         instance.focus();
 
-        instance.writeln('> Welcome to JavaBeans! This terminal is for testing only.');
-        instance.write('> ');
-
-        const handleCommand = (command) => {
-            if (command.toLowerCase() === 'hello') {
-                instance.writeln('Hello back!');
-            } else if(command.toLowerCase() === 'clear') {
-                instance.clear();
-            } else {
-                instance.writeln(`Unknown command: ${command}`);
-            }
-        };
-
         const dispose = instance.onData((data) => {
-            ws.current?.send(data);
-            // if user pressed enter, 13, move to a new line
-            if (data.charCodeAt(0) === 13) {
-                instance.writeln('');
-                handleCommand(input.current);
-                // clears the terminal once user types "clear"
-                input.current = '';
-                instance.write('> ');
-            } else if (data.charCodeAt(0) == 127) {
-                if (input.current.length > 0) {
-                    instance.write('\b \b');
-                    // erase character in buffer
-                    input.current = input.current.slice(0, -1);
-                }
-            } else {
-                instance.write(data);
-                input.current += data;
+            // Send all input directly to backend
+            if (ws.current?.readyState === WebSocket.OPEN) {
+                ws.current.send(data);
             }
         });
 
