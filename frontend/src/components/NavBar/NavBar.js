@@ -1,23 +1,26 @@
+import { Link } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import logo from '../../logo.png';
+import './NavBar.css';
+
 
 export default function NavBar() {
     return(
         <>
-            <Navbar className="d-flex justify-content-start">
+            <Navbar className="navbar">
                 <Container>
-                    <Navbar.Brand href="#home">
+                    <Navbar.Brand as={Link} to="/">
                         <img
                             src={logo}
-                            width="40"
-                            height="40"
+                            width="45"
+                            height="45"
                         />
+                        JavaBeans
                     </Navbar.Brand>
-                    <Nav.Link href="#home">JavaBeans</Nav.Link>
-                    <Nav.Link href="#about">About</Nav.Link>
-                    <Nav.Link href="#faq">FAQ</Nav.Link>
+                    <Nav.Link as={Link} to="/about">About</Nav.Link>
+                    <Nav.Link as={Link} to="/faq">FAQ</Nav.Link>
                 </Container>
             </Navbar>
         </>
