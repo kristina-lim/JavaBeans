@@ -12,11 +12,11 @@ export default function NavBar() {
                     <Navbar.Brand as={Link} to="/">
                         <img
                             src={logo}
-                            width="40"
-                            height="40"
+                            width="45"
+                            height="45"
                         />
+                        JavaBeans
                     </Navbar.Brand>
-                    <Nav.Link as={Link} to="/">JavaBeans</Nav.Link>
                     <Nav.Link as={Link} to="/about">About</Nav.Link>
                     <Nav.Link as={Link} to="/faq">FAQ</Nav.Link>
                 </Container>
