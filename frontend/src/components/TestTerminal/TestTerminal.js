@@ -51,7 +51,7 @@ export default function TestTerminal() {
             ref={ref}
             tabIndex={0}
             style={{
-                width: '45%',
+                width: '100%',
                 height: '400px',
                 backgroundColor: '#1e1e1e',
                 borderRadius: '8px',
