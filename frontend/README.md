@@ -1,3 +1,62 @@
+# JavaBeans Frontend
+
+This is the React frontend for the JavaBeans application, built with Create React App and served in production using Nginx.
+
+## Architecture
+
+The frontend is deployed as a Docker container with the following structure:
+
+- **Build Stage**: Uses Node.js 20 to build an optimized production bundle
+- **Runtime Stage**: Uses Nginx Alpine to serve static files and proxy WebSocket connections
+- **Port**: Exposed on port 80 internally, mapped to port 3000 on the host
+
+## Production Build
+
+The Dockerfile (`frontend/Dockerfile`) performs a multi-stage build:
+
+1. **Stage 1 (Build)**:
+   - Uses `node:20-slim` base image
+   - Installs dependencies via `npm ci`
+   - Builds production bundle with `npm run build`
+
+2. **Stage 2 (Runtime)**:
+   - Uses `nginx:alpine` base image
+   - Copies built static files to nginx html directory
+   - Configures nginx for routing and WebSocket proxying
+
+## Nginx Configuration
+
+The nginx configuration (`frontend/nginx.conf`) handles:
+
+1. **Static File Serving**: Serves React application with client-side routing support
+2. **WebSocket Proxying**: Proxies WebSocket connections to the backend service:
+   - `/micro` endpoint - Terminal for Micro text editor
+   - `/test` endpoint - Terminal for running tests
+3. **API Proxying**: Optional `/api/` endpoint for future REST API calls
+
+## WebSocket Connection
+
+The terminal components (`MicroTerminal.js`, `TestTerminal.js`) connect to the backend via WebSocket using dynamic URLs:
+
+```javascript
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const wsUrl = `${protocol}//${window.location.host}/micro`;
+```
+
+This approach ensures:
+- WebSocket URLs adapt to the current host and protocol
+- No hardcoded backend URLs
+- Works seamlessly with nginx reverse proxy
+- Supports both HTTP and HTTPS deployments
+
+## Components
+
+- **MicroTerminal**: Terminal emulator for the Micro text editor
+- **TestTerminal**: Terminal emulator for running Maven tests
+- **NavBar**: Navigation component with Bootstrap styling
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

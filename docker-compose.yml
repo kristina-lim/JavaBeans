@@ -1,0 +1,44 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: javabeans-backend
+    ports:
+      - "9090:9090"
+    volumes:
+      - exercises-data:/app/exercises
+    networks:
+      - javabeans-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: javabeans-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - javabeans-network
+    environment:
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=9090
+    restart: unless-stopped
+
+volumes:
+  exercises-data:
+    name: java-beans-data
+
+networks:
+  javabeans-network:
+    driver: bridge
