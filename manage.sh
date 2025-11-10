@@ -87,9 +87,8 @@ case "$COMMAND" in
         # Use POSIX-compliant 'case' for input validation
         case "$REPLY" in
             [Yy]*)
-                stop_containers
-                echo "Deleting volume: $VOLUME_NAME..."
-                docker volume rm "$VOLUME_NAME"
+                echo "Stopping all containers and removing volumes..."
+                docker-compose -f "$COMPOSE_FILE" down -v
                 echo "All clean."
                 ;;
             *)
