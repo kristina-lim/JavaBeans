@@ -10,8 +10,10 @@ export default function MicroTerminal() {
     useEffect(() => {
         if (!instance) { return; }
 
-         // Connect to backend WebSocket
-        ws.current = new WebSocket('ws://localhost:9090/micro');
+         // Connect to backend WebSocket (via nginx proxy)
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/micro`;
+        ws.current = new WebSocket(wsUrl);
         ws.current.onopen = () => {
             instance.writeln('> Connected to Java backend.\r\n');
         };
