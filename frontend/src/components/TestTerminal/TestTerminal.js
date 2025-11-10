@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useXTerm } from 'react-xtermjs';
 import '@xterm/xterm/css/xterm.css';
 import { useTerminalState } from '../TerminalState/TerminalState';
-import { useWebSocket } from "../WebSocketContext/WebSocketContext";
+import { useWebSocket } from "../WebSocketProvider/WebSocketProvider";
 
 export default function TestTerminal() {
     const { instance, ref } = useXTerm();
