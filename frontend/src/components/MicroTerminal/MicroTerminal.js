@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useXTerm } from 'react-xtermjs';
 import '@xterm/xterm/css/xterm.css';
-import { useTerminalState } from '../TerminalState/TerminalState';
+//import { useTerminalState } from '../../TerminalState/TerminalState';
 
 export default function MicroTerminal() {
     const { instance, ref } = useXTerm();

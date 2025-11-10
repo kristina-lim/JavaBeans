@@ -1,52 +1,43 @@
 import React, { useEffect, useRef } from 'react';
 import { useXTerm } from 'react-xtermjs';
 import '@xterm/xterm/css/xterm.css';
+import { useTerminalState } from '../TerminalState/TerminalState';
+import { useWebSocket } from "../WebSocketContext/WebSocketContext";
 
 export default function TestTerminal() {
     const { instance, ref } = useXTerm();
-    const input = useRef('');
-    const ws = useRef(null);
+    const { testHistory, appendTestHistory } = useTerminalState();
+    const { sendTestData, subscribeTest } = useWebSocket();
+    const isInitialized = useRef(false);
 
     useEffect(() => {
         if (!instance) { return; }
 
-         // Connect to backend WebSocket (via nginx proxy)
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/test`;
-        ws.current = new WebSocket(wsUrl);
-        ws.current.onopen = () => {
-            instance.writeln('> Connected to Java backend.\r\n');
-        };
+        // Restore history on mount
+        if (testHistory && !isInitialized.current) {
+            instance.write(testHistory);
+            isInitialized.current = true;
+        }
 
-        ws.current.onmessage = (event) => {
-            // Data from backend (shell output)
-            instance.write(event.data);
-        };
-
-        ws.current.onclose = () => {
-            instance.writeln('\r\n> Connection closed.');
-        };
-
-        ws.current.onerror = (err) => {
-            console.error('WebSocket error:', err);
-            instance.writeln('\r\n> Connection error.');
-        };
-
-        // focus terminal so user can type
-        instance.focus();
-
-        const dispose = instance.onData((data) => {
-            // Send all input directly to backend
-            if (ws.current?.readyState === WebSocket.OPEN) {
-                ws.current.send(data);
-            }
+        // Subscribe to WebSocket messages
+        const unsubscribe = subscribeTest((data) => {
+            instance.write(data);
+            appendTestHistory(data); // Only save server responses
         });
+
+        // Handle user input
+        const dispose = instance.onData((data) => {
+            sendTestData(data);
+        });
+
+        // Focus terminal so user can type
+        instance.focus();
 
         return () => {
             dispose.dispose();
-            instance.dispose();
+            unsubscribe();
         };
-    }, [instance]);
+    }, [instance, testHistory, appendTestHistory, sendTestData, subscribeTest]);
 
     return (
         <div
@@ -63,3 +54,4 @@ export default function TestTerminal() {
         />
     );
 }
+
