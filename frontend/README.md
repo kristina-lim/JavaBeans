@@ -54,6 +54,9 @@ This approach ensures:
 - **MicroTerminal**: Terminal emulator for the Micro text editor
 - **TestTerminal**: Terminal emulator for running Maven tests
 - **NavBar**: Navigation component with Bootstrap styling
+- **TerminalState**: Context provider that manages terminal history state for both Micro and Test terminals
+  - **NOTE**: Make sure to reload the page after some time to access both terminals at the same time.
+- **WebSocketProvider**: Context provider that manages WebSocket connections to the backend. Establishes and maintains persistent connections for both `/micro` and `/test` endpoints.
 
 ---
 
