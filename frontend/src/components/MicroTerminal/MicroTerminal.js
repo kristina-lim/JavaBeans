@@ -1,52 +1,43 @@
 import React, { useEffect, useRef } from 'react';
 import { useXTerm } from 'react-xtermjs';
 import '@xterm/xterm/css/xterm.css';
+import { useTerminalState } from '../TerminalState/TerminalState';
+import { useWebSocket } from "../WebSocketProvider/WebSocketProvider";
 
 export default function MicroTerminal() {
     const { instance, ref } = useXTerm();
-    const input = useRef('');
-    const ws = useRef(null);
+    const { microHistory, appendMicroHistory } = useTerminalState();
+    const { sendMicroData, subscribeMicro } = useWebSocket();
+    const isInitialized = useRef(false);
 
     useEffect(() => {
         if (!instance) { return; }
 
-         // Connect to backend WebSocket (via nginx proxy)
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/micro`;
-        ws.current = new WebSocket(wsUrl);
-        ws.current.onopen = () => {
-            instance.writeln('> Connected to Java backend.\r\n');
-        };
+        // Restore history on mount
+        if (microHistory && !isInitialized.current) {
+            instance.write(microHistory);
+            isInitialized.current = true;
+        }
 
-        ws.current.onmessage = (event) => {
-            // Data from backend (shell output)
-            instance.write(event.data);
-        };
+        // Subscribe to WebSocket messages
+        const unsubscribe = subscribeMicro((data) => {
+            instance.write(data);
+            appendMicroHistory(data); // Only save server responses
+        });
 
-        ws.current.onclose = () => {
-            instance.writeln('\r\n> Connection closed.');
-        };
-
-        ws.current.onerror = (err) => {
-            console.error('WebSocket error:', err);
-            instance.writeln('\r\n> Connection error.');
-        };
+        // Handle user input
+        const dispose = instance.onData((data) => {
+            sendMicroData(data);
+        });
 
         // focus terminal so user can type
         instance.focus();
 
-        const dispose = instance.onData((data) => {
-            // Send all input directly to backend
-            if (ws.current?.readyState === WebSocket.OPEN) {
-                ws.current.send(data);
-            }
-        });
-
         return () => {
             dispose.dispose();
-            instance.dispose();
+            unsubscribe();
         };
-    }, [instance]);
+    }, [instance, microHistory, appendMicroHistory, sendMicroData, subscribeMicro]);
 
     return (
         <div
